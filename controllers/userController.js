@@ -32,30 +32,46 @@ exports.addUser=async (req,res)=>{
 
 exports.updateUser=async (req,res)=>{
     try{
-        let user=await userModel.findById(req.params.id).exec();
-        if(user.disabled){
-           return res.status(400).send("Do not allow update users that were fetched from the remote server");
-        }
-        user=await userModel.findByIdAndUpdate(req.params.id,req.body,{ new: true })
-        res.send(user);
+        let user=await userModel.findOneAndUpdate({_id:req.params.id,disabled:false},req.body,{ new: true })
+        res.send(user);//The user will be NULL when the id does not exist or cannot be changed
     }
     catch(err){
         res.status(400).send(err.message);
     }
+
+    // try{
+    //     let user=await userModel.findById(req.params.id).exec();
+    //     if(user.disabled){
+    //        return res.status(400).send("Do not allow update users that were fetched from the remote server");
+    //     }
+    //     user=await userModel.findByIdAndUpdate(req.params.id,req.body,{ new: true })
+    //     res.send(user);
+    // }
+    // catch(err){
+    //     res.status(400).send(err.message);
+    // }
 }
 
 exports.deleteUser=async (req,res)=>{
+    
     try{
-        let user=await userModel.findById(req.params.id).exec();
-        if(user.disabled){
-           return res.status(400).send("Do not allow delete users that were fetched from the remote server");
-        }
-        user=await userModel.findByIdAndDelete(req.params.id);
-        res.send(user);
+        let user=await userModel.findOneAndDelete({_id:req.params.id,disabled:false})
+        res.send(user);//The user will be NULL when the id does not exist or cannot be changed
     }
     catch(err){
         res.status(400).send(err.message);
     }
+    // try{
+    //     let user=await userModel.findById(req.params.id).exec();
+    //     if(user.disabled){
+    //        return res.status(400).send("Do not allow delete users that were fetched from the remote server");
+    //     }
+    //     user=await userModel.findByIdAndDelete(req.params.id);
+    //     res.send(user);
+    // }
+    // catch(err){
+    //     res.status(400).send(err.message);
+    // }
 }
 
 
